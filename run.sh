@@ -1,3 +1,3 @@
 #!/bin/bash
 
-stack build & stack exec dsl
+stack build && stack exec dsl
