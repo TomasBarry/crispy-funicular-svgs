@@ -3,14 +3,14 @@
     </head>
     <body>
         <h1>CS 4012 - Assignment 1</h1>
-        <p>Description</p>
+        <p>Input text in the box at the bottom of the page in the form of the syntax described below. See the README for more details</p>
         <h3>DSL Syntax</h3>
         <p>
             Input = [Drawing]
             <br>
             Drawing = [Transform, Shape, Stylesheet)
             <br>
-            Transform = Identity | Compose Transform Transform | Rotate Integer | Scale Double Double | Translate Double Double
+            Transform = Identity | Compose Transform Transform | Rotate Integer | Scale Vector | Translate Vector
             <br>
             Shape = Square | Circle
             <br>
@@ -19,6 +19,8 @@
             Style = FillColour Colour | StrokeWidth Integer | StrokeColour Colour | Xcoord Integer | Ycoord Integer | Width Integer | Height Integer | Radius Integer
             <br>
             Colour = Red | Blue | Black | Green
+            <br>
+            Vector = Double Double
         </p>
         <form action="/rendersvgs" method="post">
             Input your drawings in the DSL:
