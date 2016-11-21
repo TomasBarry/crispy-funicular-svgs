@@ -1,10 +1,17 @@
-module Interpreter (interpretStyle, interpretShape, interpretTransforms, drawingToSVG) where
+{-# LANGUAGE OverloadedStrings #-}
+
+module Interpreter (interpretStyle, interpretShape, interpretTransforms, drawingToSVG, inputDrawingsToSVG) where
 
 import Stylesheet
 import Shapes
 import Text.Blaze.Svg11 ((!))
 import qualified Text.Blaze.Svg11 as S
 import qualified Text.Blaze.Svg11.Attributes as A
+
+
+inputDrawingsToSVG :: Drawings -> S.Svg
+inputDrawingsToSVG drawings = S.docTypeSvg ! A.version "1.1" ! A.width "1000" ! A.height "1000" ! A.viewbox "-100 -20 1000 1000" $ do
+                                          Prelude.foldl1 (>>) $ Prelude.map drawingToSVG drawings
 
 
 nestTransformDos :: ([S.AttributeValue], Shape, Stylesheet) -> S.Svg
@@ -27,7 +34,7 @@ interpretStyle (Xcoord x) = A.x $ S.toValue x
 interpretStyle (Ycoord y) = A.y $ S.toValue y
 interpretStyle (Width w) = A.width $ S.toValue w
 interpretStyle (Height h) = A.height $ S.toValue h
-interpretStyle (Radius r) = A.radius $ S.toValue r
+interpretStyle (Radius r) = A.r $ S.toValue r
 
 
 -- For each Shape in Shapes.hs, add an interpreter here
