@@ -1,9 +1,20 @@
-module Interpreter (interpretStyle, interpretShape) where
+module Interpreter (interpretStyle, interpretShape, interpretTransforms, drawingToSVG) where
 
 import Stylesheet
 import Shapes
+import Text.Blaze.Svg11 ((!))
 import qualified Text.Blaze.Svg11 as S
 import qualified Text.Blaze.Svg11.Attributes as A
+
+
+nestTransformDos :: ([S.AttributeValue], Shape, Stylesheet) -> S.Svg
+nestTransformDos ([], shape, styles) = Prelude.foldl (!) (interpretShape shape) (Prelude.map interpretStyle styles)
+nestTransformDos ((transform:transfoms), shape, styles) = S.g ! A.transform transform $ do (nestTransformDos (transfoms, shape, styles))
+
+
+
+drawingToSVG :: (Transform, Shape, Stylesheet) -> S.Svg
+drawingToSVG (transforms, shape, styles) = nestTransformDos (interpretTransforms transforms, shape, styles)
 
 
 -- For each Style in Stylesheet.hs, add an interpreter here
@@ -25,3 +36,12 @@ interpretShape :: Shape -> S.Svg
 interpretShape Circle = S.circle
 interpretShape Square = S.rect
 
+
+-- For each Transform in Transforms.hs, add an interpreter here
+
+interpretTransforms :: Transform -> [S.AttributeValue]
+interpretTransforms (Identity)                        = [S.translate 0 0]
+interpretTransforms (Translate (Vector x y)) = [S.translate x y]
+interpretTransforms (Scale (Vector x y))        = [S.scale x y]
+interpretTransforms (Rotate a)                       = [S.rotate a]
+interpretTransforms (Compose a b)                = Prelude.concat [(interpretTransforms a), (interpretTransforms b)]

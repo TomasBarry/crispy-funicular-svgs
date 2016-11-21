@@ -1,5 +1,5 @@
 module Shapes(
-  Shape (..), Vector (..), Transform (..), Drawing)  where
+  Shape (..), Vector (..), Transform (..), Drawings)  where
 
 import Stylesheet
 import Transforms
@@ -11,5 +11,5 @@ data Shape = Circle
 
 
 
-type Drawing = [(Transform, Shape, Stylesheet)]
+type Drawings = [(Transform, Shape, Stylesheet)]
 
