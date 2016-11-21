@@ -3,13 +3,7 @@
 
 import Web.Scotty
 import Shapes
-import Stylesheet
-import Transforms
 import Data.Text.Lazy
-import Data.Colour.Names as CN
-import Text.Blaze.Svg11 ((!))
-import qualified Text.Blaze.Svg11 as S
-import qualified Text.Blaze.Svg11.Attributes as A
 import Interpreter
 import Text.Blaze.Svg.Renderer.String (renderSvg)
 

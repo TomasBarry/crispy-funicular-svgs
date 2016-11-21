@@ -1,30 +1,42 @@
-{-# LANGUAGE OverloadedStrings #-}
-
-module Interpreter (interpretStyle, interpretShape, interpretTransforms, drawingToSVG, inputDrawingsToSVG) where
+module Interpreter (
+    interpretStyle,
+    drawingToSVG,
+    interpretShape,
+    interpretTransforms,
+    inputDrawingsToSVG
+) where
 
 import Stylesheet
 import Shapes
+import Transforms
 import Text.Blaze.Svg11 ((!))
 import qualified Text.Blaze.Svg11 as S
 import qualified Text.Blaze.Svg11.Attributes as A
 
 
+
+-- Convert the DSL string to a renderable object
 inputDrawingsToSVG :: Drawings -> S.Svg
-inputDrawingsToSVG drawings = S.docTypeSvg ! A.version "1.1" ! A.width "1000" ! A.height "1000" ! A.viewbox "-100 -20 1000 1000" $ do
-                                          Prelude.foldl1 (>>) $ Prelude.map drawingToSVG drawings
+inputDrawingsToSVG drawings = S.docTypeSvg
+                                                    ! (A.version $ S.toValue "1.1")
+                                                    ! (A.width $ S.toValue "1000")
+                                                    ! (A.height $ S.toValue "1000")
+                                                    ! (A.viewbox $ S.toValue "-100 -20 1000 1000") $ do
+                                                        Prelude.foldl1 (>>) $ Prelude.map drawingToSVG drawings
 
 
-nestTransformDos :: ([S.AttributeValue], Shape, Stylesheet) -> S.Svg
-nestTransformDos ([], shape, styles) = Prelude.foldl (!) (interpretShape shape) (Prelude.map interpretStyle styles)
-nestTransformDos ((transform:transfoms), shape, styles) = S.g ! A.transform transform $ do (nestTransformDos (transfoms, shape, styles))
-
-
-
+-- Convert a single Drawing to a renderable object
 drawingToSVG :: (Transform, Shape, Stylesheet) -> S.Svg
 drawingToSVG (transforms, shape, styles) = nestTransformDos (interpretTransforms transforms, shape, styles)
 
 
--- For each Style in Stylesheet.hs, add an interpreter here
+-- Required to apply multiple transformations (in Compose)
+nestTransformDos :: ([S.AttributeValue], Shape, Stylesheet) -> S.Svg
+nestTransformDos ([], shape, styles) = Prelude.foldl (!) (interpretShape shape) (Prelude.map interpretStyle styles)
+nestTransformDos ((transform:transfoms), shape, styles) = S.g
+                                                                                                ! A.transform transform $ do
+                                                                                                    (nestTransformDos (transfoms, shape, styles))
+
 
 interpretStyle :: Style -> S.Attribute
 interpretStyle (FillColour c) = A.fill $ S.toValue $ show c
@@ -37,14 +49,10 @@ interpretStyle (Height h) = A.height $ S.toValue h
 interpretStyle (Radius r) = A.r $ S.toValue r
 
 
--- For each Shape in Shapes.hs, add an interpreter here
-
 interpretShape :: Shape -> S.Svg
 interpretShape Circle = S.circle
 interpretShape Square = S.rect
 
-
--- For each Transform in Transforms.hs, add an interpreter here
 
 interpretTransforms :: Transform -> [S.AttributeValue]
 interpretTransforms (Identity)                        = [S.translate 0 0]

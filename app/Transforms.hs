@@ -1,13 +1,10 @@
-module Transforms (Transform (..), Vector (..)) where
-
+module Transforms (
+    Vector (..),
+    Transform (..)
+) where
 
 data Vector = Vector Double Double
-              deriving (Read, Show)
-
-
--- 2x2 square matrices are all we need.
-data Matrix = Matrix Vector Vector
-              deriving (Read, Show)
+    deriving (Show, Read)
 
 data Transform = Identity
            | Translate Vector

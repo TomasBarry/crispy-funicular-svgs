@@ -1,5 +1,7 @@
 module Shapes(
-  Shape (..), Vector (..), Transform (..), Drawings)  where
+  Shape (..),
+  Drawings
+)  where
 
 import Stylesheet
 import Transforms
@@ -10,6 +12,7 @@ data Shape = Circle
              deriving (Read, Show)
 
 
+type Drawing = (Transform, Shape, Stylesheet)
 
-type Drawings = [(Transform, Shape, Stylesheet)]
+type Drawings = [Drawing]
 

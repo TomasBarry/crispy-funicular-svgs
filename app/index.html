@@ -23,7 +23,12 @@
         <form action="/rendersvgs" method="post">
             Input your drawings in the DSL:
             <br>
-            <textarea rows="10" cols="150" name="dsl_query">((Identity), Circle,[FillColour Green, Radius 20])</textarea>
+            <textarea rows="10" cols="150" name="dsl_query">[
+((Identity), Circle,[FillColour Green, Radius 20]),
+((Translate (Vector 50 5)), Circle,[FillColour Blue, Radius 20]),
+((Scale (Vector 2 2)), Square,[FillColour Red, Xcoord 20, Ycoord 20, Width 10, Height 10]),
+((Compose (Translate (Vector 50 5)) (Rotate 45)), Square,[FillColour Black, Width 50, Height 10, StrokeColour Green, StrokeWidth 3])
+]</textarea>
             <br>
             <input type="submit" value="Submit">
         </form>
